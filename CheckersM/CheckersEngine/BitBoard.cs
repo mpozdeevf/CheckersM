@@ -6,10 +6,10 @@ namespace CheckersEngine
 {
     public class BitBoard
     {
-        public long WhiteCheckers { get; set; }
-        public long WhiteKings { get; set; }
-        public long BlackCheckers { get; set; }
-        public long BlackKings { get; set; }
+        public readonly long WhiteCheckers;
+        public readonly long WhiteKings;
+        public readonly long BlackCheckers;
+        public readonly long BlackKings;
 
         public BitBoard()
         {
@@ -25,6 +25,19 @@ namespace CheckersEngine
             WhiteKings = whiteKings;
             BlackCheckers = blackCheckers;
             BlackKings = blackKings;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BitBoard bitBoard &&
+                   (bitBoard.BlackCheckers == BlackCheckers && bitBoard.BlackKings == BlackKings
+                                                            && bitBoard.WhiteCheckers == WhiteCheckers &&
+                                                            bitBoard.WhiteKings == WhiteKings);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)unchecked(2 * WhiteCheckers + 3 * WhiteKings + 5 * BlackCheckers + 111 * BlackKings);
         }
     }
 }
