@@ -35,7 +35,18 @@ namespace CheckersEngineVisualTest
             //    Console.WriteLine();
             //}
 
-            WatchPositions();
+            //WatchPositions();
+            var n = -6172840797264674816;
+            var str = Convert.ToString(n, 2);
+            long r = 0;
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '1')
+                {
+                    r += (long)Math.Pow(2, 64 - i - 1);
+                }
+            }
+            Console.WriteLine(str);
 
 
         }
@@ -79,37 +90,48 @@ namespace CheckersEngineVisualTest
             //    Convert.ToInt64(new string('0', 36) + "101" + new string('0', 25), 2), 0));
 
             var board = new Board();
-            var boardState = board.GetBoardState();
-            for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+
+            var bitBoard = board.GetBitBoardFromBoard();
+            var str = Convert.ToString(bitBoard.WhiteCheckers, 2);
+            for (var i = 0; i < str.Length; i++)
             {
-                for (var j = 0; j < boardState.GetLength(1); j++)
+                if (str[i] == '1')
                 {
-                    Console.Write((int)boardState[i, j] + " ");
+
                 }
-                Console.WriteLine();
             }
-            Console.WriteLine();
-            var positions = board.GetAllPossiblePositions(PlayerType.White);
-            var k = 0;
-            var rnd = new Random();
-            while (positions.Count > 0)
-            {
-                var num = rnd.Next(0, positions.Count - 1);
-                board = new Board(positions[num][positions[num].Count - 1]);
-                boardState = board.GetBoardState();
-                Console.WriteLine(k % 2 == 0 ? "W" : "B");
-                for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
-                {
-                    for (var j = 0; j < boardState.GetLength(1); j++)
-                    {
-                        Console.Write((int)boardState[i, j] + " ");
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
-                k++;
-                positions = board.GetAllPossiblePositions(k % 2 == 0 ? PlayerType.White : PlayerType.Black);
-            }
+
+            //var boardState = board.GetBoardState();
+            //for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+            //{
+            //    for (var j = 0; j < boardState.GetLength(1); j++)
+            //    {
+            //        Console.Write((int)boardState[i, j] + " ");
+            //    }
+            //    Console.WriteLine();
+            //}
+            //Console.WriteLine();
+            //var positions = board.GetAllPossiblePositions(PlayerType.White);
+            //var k = 0;
+            //var rnd = new Random();
+            //while (positions.Count > 0)
+            //{
+            //    var num = rnd.Next(0, positions.Count - 1);
+            //    board = new Board(positions[num][positions[num].Count - 1]);
+            //    boardState = board.GetBoardState();
+            //    Console.WriteLine(k % 2 == 0 ? "W" : "B");
+            //    for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+            //    {
+            //        for (var j = 0; j < boardState.GetLength(1); j++)
+            //        {
+            //            Console.Write((int)boardState[i, j] + " ");
+            //        }
+            //        Console.WriteLine();
+            //    }
+            //    Console.WriteLine();
+            //    k++;
+            //    positions = board.GetAllPossiblePositions(k % 2 == 0 ? PlayerType.White : PlayerType.Black);
+            //}
 
             //foreach (var position in positions)
             //{

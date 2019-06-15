@@ -1,0 +1,21 @@
+﻿#gameTable {
+ 
+}
+
+.tableRow {
+    height: 50px;
+}
+
+.tableColumn {
+    width: 50px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.rowName {
+    text-align: center;
+}
+
+.columnName {
+    text-align: center;
+}

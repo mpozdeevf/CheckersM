@@ -26,21 +26,27 @@ namespace CheckersM.Hubs
             {
                 List<List<BitBoard>> positions;
                 BitBoard bitBoard;
-                var rnd = new Random();
-                var playerType = (PlayerType) rnd.Next(0, 1);
-                if (playerType == PlayerType.White)
-                {
-                    var board = new Board();
-                    positions = board.GetAllPossiblePositions(playerType);
-                    bitBoard = board.GetBitBoardFromBoard();
-                }
-                else
-                {
-                    var aiMove = ArtificialIntelligence.GetNextMove(new Board().GetAllPossiblePositions(PlayerType.White));
-                    var board = new Board(aiMove[aiMove.Count - 1]);
-                    positions = board.GetAllPossiblePositions(playerType);
-                    bitBoard = board.GetBitBoardFromBoard();
-                }
+                //var rnd = new Random();
+                //var playerType = (PlayerType) rnd.Next(0, 1);
+                var playerType = PlayerType.White;
+
+                var board = new Board();
+                positions = board.GetAllPossiblePositions(playerType);
+                bitBoard = board.GetBitBoardFromBoard();
+
+                //if (playerType == PlayerType.White)
+                //{
+                //    var board = new Board();
+                //    positions = board.GetAllPossiblePositions(playerType);
+                //    bitBoard = board.GetBitBoardFromBoard();
+                //}
+                //else
+                //{
+                //    var aiMove = ArtificialIntelligence.GetNextMove(new Board().GetAllPossiblePositions(PlayerType.White));
+                //    var board = new Board(aiMove[aiMove.Count - 1]);
+                //    positions = board.GetAllPossiblePositions(playerType);
+                //    bitBoard = board.GetBitBoardFromBoard();
+                //}
                 _playersData[Context.ConnectionId] = new PlayerData(playerType, positions);
                 var gameData = new GameData(bitBoard, _playersData[Context.ConnectionId]);
                 await Clients.Caller.SendAsync("Start",JsonConvert.SerializeObject(gameData));
