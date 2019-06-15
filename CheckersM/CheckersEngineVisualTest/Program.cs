@@ -69,15 +69,8 @@ namespace CheckersEngineVisualTest
 
         private static void WatchPositions()
         {
-            //var board = new Board(new BitBoard(0, Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2), 0,
-            //    Convert.ToInt64(new string('0', 18) + "1" + new string('0', 15) + "101" + new string('0', 27), 2)));
-
-            //var board = new Board(new BitBoard(0, 0, 0, 
-            //    Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2)));
-
-            //var board = new Board(new BitBoard(Convert.ToInt64(new string('0', 27) + "1" + new string('0', 36), 2), 0,
-            //    Convert.ToInt64(new string('0', 36) + "101" + new string('0', 25), 2), 0));
-
+            //var board = new Board(new BitBoard(Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2), 0, 
+            //    Convert.ToInt64(new string('0', 18) + "1" + new string('0', 15) + "101" + new string('0', 27), 2), 0));
             var board = new Board();
             var boardState = board.GetBoardState();
             for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
@@ -92,6 +85,7 @@ namespace CheckersEngineVisualTest
             var positions = board.GetAllPossiblePositions(PlayerType.White);
             var k = 0;
             var rnd = new Random();
+            //var board = new Board();
             while (positions.Count > 0)
             {
                 var num = rnd.Next(0, positions.Count - 1);
@@ -110,7 +104,6 @@ namespace CheckersEngineVisualTest
                 k++;
                 positions = board.GetAllPossiblePositions(k % 2 == 0 ? PlayerType.White : PlayerType.Black);
             }
-
             //foreach (var position in positions)
             //{
             //    board = new Board(position[position.Count - 1]);

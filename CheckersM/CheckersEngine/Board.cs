@@ -46,13 +46,6 @@ namespace CheckersEngine
                                 new[] { CellType.BlackChecker, CellType.BlackKing },
                                 positions, new List<BitBoard>(), _boardState);
                         }
-
-                        if (_boardState[i, j] == CellType.WhiteKing)
-                        {
-                            positions = GetPositionsAfterFigthsKings(i, j, playerType,
-                                new[] { CellType.BlackChecker, CellType.BlackKing },
-                                positions, new List<BitBoard>(), _boardState);
-                        }
                     }
                 }
 
@@ -91,11 +84,6 @@ namespace CheckersEngine
                                     positions.Add(positionsInTurn);
                                 }
                             }
-
-                            if (_boardState[i, j] == CellType.WhiteKing)
-                            {
-                                positions = GetPositionsWithoutFigthsKings(i, j, positions);
-                            }
                         }
                     }
                 }
@@ -110,13 +98,6 @@ namespace CheckersEngine
                         {
                             positions = GetPositionsAfterFigths(i, j, playerType,
                                 new[] { CellType.WhiteChecker, CellType.WhiteKing },
-                                positions, new List<BitBoard>(), _boardState);
-                        }
-
-                        if (_boardState[i, j] == CellType.BlackKing)
-                        {
-                            positions = GetPositionsAfterFigthsKings(i, j, playerType,
-                                new[] { CellType.BlackChecker, CellType.BlackKing },
                                 positions, new List<BitBoard>(), _boardState);
                         }
                     }
@@ -156,11 +137,6 @@ namespace CheckersEngine
                                     positions.Add(positionsInTurn);
                                 }
                             }
-
-                            if (_boardState[i, j] == CellType.BlackKing)
-                            {
-                                positions = GetPositionsWithoutFigthsKings(i, j, positions);
-                            }
                         }
                     }
                 }
@@ -187,10 +163,6 @@ namespace CheckersEngine
                         else
                             tempBoardState[i + 2, j + 2] = CellType.WhiteChecker;
                     }
-                    else
-                    {
-                        tempBoardState[i + 2, j + 2] = CellType.BlackChecker;
-                    }
                     positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
                     positions = GetPositionsAfterFigths(i + 2, j + 2, playerType, enemies, positions,
                         positionsInTurn, tempBoardState);
@@ -209,10 +181,6 @@ namespace CheckersEngine
                             tempBoardState[i - 2, j + 2] = CellType.BlackKing;
                         else
                             tempBoardState[i - 2, j + 2] = CellType.BlackChecker;
-                    }
-                    else
-                    {
-                        tempBoardState[i - 2, j + 2] = CellType.WhiteChecker;
                     }
                     positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
                     positions = GetPositionsAfterFigths(i - 2, j + 2, playerType, enemies, positions,
@@ -233,10 +201,6 @@ namespace CheckersEngine
                         else
                             tempBoardState[i - 2, j - 2] = CellType.BlackChecker;
                     }
-                    else
-                    {
-                        tempBoardState[i - 2, j - 2] = CellType.WhiteChecker;
-                    }
                     positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
                     positions = GetPositionsAfterFigths(i - 2, j - 2, playerType, enemies, positions,
                         positionsInTurn, tempBoardState);
@@ -255,10 +219,6 @@ namespace CheckersEngine
                             tempBoardState[i + 2, j - 2] = CellType.WhiteKing;
                         else
                             tempBoardState[i + 2, j - 2] = CellType.WhiteChecker;
-                    }
-                    else
-                    {
-                        tempBoardState[i + 2, j - 2] = CellType.BlackChecker;
                     }
                     positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
                     positions = GetPositionsAfterFigths(i + 2, j - 2, playerType, enemies, positions,
@@ -281,309 +241,6 @@ namespace CheckersEngine
                     positions.Add(positionsInTurnCopy.ToList());
                 }
             }
-            return positions;
-        }
-
-        private List<List<BitBoard>> GetPositionsAfterFigthsKings(int i, int j, PlayerType playerType,
-            CellType[] enemies,
-            List<List<BitBoard>> positions, List<BitBoard> positionsInTurn, CellType[,] boardState)
-        {
-            var i1 = i + 1;
-            var j1 = j + 1;
-            var tempBoardState = new CellType[BoardLength, BoardLength];
-            Array.Copy(boardState, tempBoardState, BoardSize);
-            while (i1 < 8 && j1 < 8)
-            {
-                var variantsAfterFight = new List<Tuple<int, int>>();
-                if (enemies.Contains(tempBoardState[i1, j1]))
-                {
-                    var i2 = i1 + 1;
-                    var j2 = j1 + 1;
-                    while (i2 < 8 && j2 < 8 && tempBoardState[i2, j2] == CellType.Empty)
-                    {
-                        variantsAfterFight.Add(Tuple.Create(i2, j2));
-                        i2++;
-                        j2++;
-                    }
-
-                    if (variantsAfterFight.Count > 0)
-                    {
-                        var current = tempBoardState[i, j];
-                        var enemy = tempBoardState[i1, j1];
-                        foreach (var (i3, j3) in variantsAfterFight)
-                        {
-                            tempBoardState[i, j] = CellType.Empty;
-                            tempBoardState[i1, j1] = CellType.Empty;
-                            tempBoardState[i3, j3] = current;
-                            positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                            positions = GetPositionsAfterFigthsKings(i3, j3, playerType, enemies,
-                                positions, positionsInTurn, tempBoardState);
-                            tempBoardState[i3, j3] = CellType.Empty;
-                            tempBoardState[i, j] = current;
-                            tempBoardState[i1, j1] = enemy;
-                            positionsInTurn.RemoveAt(positionsInTurn.Count - 1);
-                        }
-                    }
-
-                    break;
-                }
-
-                if(!enemies.Contains(tempBoardState[i1, j1]) && tempBoardState[i1, j1] != CellType.Empty)
-                    break;
-
-                i1++;
-                j1++;
-            }
-
-            i1 = i - 1;
-            j1 = j + 1;
-            Array.Copy(boardState, tempBoardState, BoardSize);
-            while (i1 > -1 && j1 < 8)
-            {
-                var variantsAfterFight = new List<Tuple<int, int>>();
-                if (enemies.Contains(tempBoardState[i1, j1]))
-                {
-                    var i2 = i1 - 1;
-                    var j2 = j1 + 1;
-                    while (i2 > -1 && j2 < 8 && tempBoardState[i2, j2] == CellType.Empty)
-                    {
-                        variantsAfterFight.Add(Tuple.Create(i2, j2));
-                        i2--;
-                        j2++;
-                    }
-
-                    if (variantsAfterFight.Count > 0)
-                    {
-                        var current = tempBoardState[i, j];
-                        var enemy = tempBoardState[i1, j1];
-                        foreach (var (i3, j3) in variantsAfterFight)
-                        {
-                            tempBoardState[i, j] = CellType.Empty;
-                            tempBoardState[i1, j1] = CellType.Empty;
-                            tempBoardState[i3, j3] = current;
-                            positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                            positions = GetPositionsAfterFigthsKings(i3, j3, playerType, enemies,
-                                positions, positionsInTurn, tempBoardState);
-                            tempBoardState[i3, j3] = CellType.Empty;
-                            tempBoardState[i, j] = current;
-                            tempBoardState[i1, j1] = enemy;
-                            positionsInTurn.RemoveAt(positionsInTurn.Count - 1);
-                        }
-                    }
-
-                    break;
-                }
-
-                if (!enemies.Contains(tempBoardState[i1, j1]) && tempBoardState[i1, j1] != CellType.Empty)
-                    break;
-
-                i1--;
-                j1++;
-            }
-
-            i1 = i - 1;
-            j1 = j - 1;
-            Array.Copy(boardState, tempBoardState, BoardSize);
-            while (i1 > -1 && j1 > -1)
-            {
-                var variantsAfterFight = new List<Tuple<int, int>>();
-                if (enemies.Contains(tempBoardState[i1, j1]))
-                {
-                    var i2 = i1 - 1;
-                    var j2 = j1 - 1;
-                    while (i2 > -1 && j2 > -1 && tempBoardState[i2, j2] == CellType.Empty)
-                    {
-                        variantsAfterFight.Add(Tuple.Create(i2, j2));
-                        i2--;
-                        j2--;
-                    }
-
-                    if (variantsAfterFight.Count > 0)
-                    {
-                        var current = tempBoardState[i, j];
-                        var enemy = tempBoardState[i1, j1];
-                        foreach (var (i3, j3) in variantsAfterFight)
-                        {
-                            tempBoardState[i, j] = CellType.Empty;
-                            tempBoardState[i1, j1] = CellType.Empty;
-                            tempBoardState[i3, j3] = current;
-                            positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                            positions = GetPositionsAfterFigthsKings(i3, j3, playerType, enemies,
-                                positions, positionsInTurn, tempBoardState);
-                            tempBoardState[i3, j3] = CellType.Empty;
-                            tempBoardState[i, j] = current;
-                            tempBoardState[i1, j1] = enemy;
-                            positionsInTurn.RemoveAt(positionsInTurn.Count - 1);
-                        }
-                    }
-
-                    break;
-                }
-
-                if (!enemies.Contains(tempBoardState[i1, j1]) && tempBoardState[i1, j1] != CellType.Empty)
-                    break;
-
-                i1--;
-                j1--;
-            }
-
-            i1 = i + 1;
-            j1 = j - 1;
-            Array.Copy(boardState, tempBoardState, BoardSize);
-            while (i1 < 8 && j1 > -1)
-            {
-                var variantsAfterFight = new List<Tuple<int, int>>();
-                if (enemies.Contains(tempBoardState[i1, j1]))
-                {
-                    var i2 = i1 + 1;
-                    var j2 = j1 - 1;
-                    while (i2 < 8 && j2 > -1 && tempBoardState[i2, j2] == CellType.Empty)
-                    {
-                        variantsAfterFight.Add(Tuple.Create(i2, j2));
-                        i2++;
-                        j2--;
-                    }
-
-                    if (variantsAfterFight.Count > 0)
-                    {
-                        var current = tempBoardState[i, j];
-                        var enemy = tempBoardState[i1, j1];
-                        foreach (var (i3, j3) in variantsAfterFight)
-                        {
-                            tempBoardState[i, j] = CellType.Empty;
-                            tempBoardState[i1, j1] = CellType.Empty;
-                            tempBoardState[i3, j3] = current;
-                            positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                            positions = GetPositionsAfterFigthsKings(i3, j3, playerType, enemies,
-                                positions, positionsInTurn, tempBoardState);
-                            tempBoardState[i3, j3] = CellType.Empty;
-                            tempBoardState[i, j] = current;
-                            tempBoardState[i1, j1] = enemy;
-                            positionsInTurn.RemoveAt(positionsInTurn.Count - 1);
-                        }
-                    }
-
-                    break;
-                }
-
-                if (!enemies.Contains(tempBoardState[i1, j1]) && tempBoardState[i1, j1] != CellType.Empty)
-                    break;
-
-                i1++;
-                j1--;
-            }
-
-            if (positionsInTurn.Count > 0)
-            {
-                var positionsInTurnCopy = new BitBoard[positionsInTurn.Count];
-                Array.Copy(positionsInTurn.ToArray(), positionsInTurnCopy, positionsInTurn.Count);
-                var isEqual = true;
-                if (positions.Count > 0)
-                {
-                    var position = positions[positions.Count - 1];
-                    if (position.Count == positionsInTurn.Count)
-                    {
-                        for (var c = 0; c < position.Count; c++)
-                        {
-                            if (!position[c].Equals(positionsInTurn[c]))
-                            {
-                                isEqual = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (!isEqual)
-                        positions.Add(positionsInTurnCopy.ToList());
-                }
-                else
-                {
-                    positions.Add(positionsInTurnCopy.ToList());
-                }
-            }
-            return positions;
-        }
-
-        private List<List<BitBoard>> GetPositionsWithoutFigthsKings(int i, int j,
-            List<List<BitBoard>> positions)
-        {
-            var i1 = i + 1;
-            var j1 = j + 1;
-            var tempBoardState = new CellType[BoardLength, BoardLength];
-            Array.Copy(_boardState, tempBoardState, BoardSize);
-            while (i1 < 8 && j1 < 8)
-            {
-                var positionsInTurn = new List<BitBoard>();
-                if (tempBoardState[i1, j1] == CellType.Empty)
-                {
-                    var current = tempBoardState[i, j];
-                    tempBoardState[i, j] = CellType.Empty;
-                    tempBoardState[i1, j1] = current;
-                    positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                    positions.Add(positionsInTurn);
-                    tempBoardState[i, j] = current;
-                    tempBoardState[i1, j1] = CellType.Empty;
-                }
-                i1++;
-                j1++;
-            }
-
-            i1 = i - 1;
-            j1 = j + 1;
-            while (i1 > -1 && j1 < 8)
-            {
-                var positionsInTurn = new List<BitBoard>();
-                if (tempBoardState[i1, j1] == CellType.Empty)
-                {
-                    var current = tempBoardState[i, j];
-                    tempBoardState[i, j] = CellType.Empty;
-                    tempBoardState[i1, j1] = current;
-                    positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                    positions.Add(positionsInTurn);
-                    tempBoardState[i, j] = current;
-                    tempBoardState[i1, j1] = CellType.Empty;
-                }
-                i1--;
-                j1++;
-            }
-
-            i1 = i - 1;
-            j1 = j - 1;
-            while (i1 > -1 && j1 > -1)
-            {
-                var positionsInTurn = new List<BitBoard>();
-                if (tempBoardState[i1, j1] == CellType.Empty)
-                {
-                    var current = tempBoardState[i, j];
-                    tempBoardState[i, j] = CellType.Empty;
-                    tempBoardState[i1, j1] = current;
-                    positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                    positions.Add(positionsInTurn);
-                    tempBoardState[i, j] = current;
-                    tempBoardState[i1, j1] = CellType.Empty;
-                }
-                i1--;
-                j1--;
-            }
-
-            i1 = i + 1;
-            j1 = j - 1;
-            while (i1 < 8 && j1 > -1)
-            {
-                var positionsInTurn = new List<BitBoard>();
-                if (tempBoardState[i1, j1] == CellType.Empty)
-                {
-                    var current = tempBoardState[i, j];
-                    tempBoardState[i, j] = CellType.Empty;
-                    tempBoardState[i1, j1] = current;
-                    positionsInTurn.Add(GetBitBoardFromBoard(tempBoardState));
-                    positions.Add(positionsInTurn);
-                    tempBoardState[i, j] = current;
-                    tempBoardState[i1, j1] = CellType.Empty;
-                }
-                i1++;
-                j1--;
-            }
-
             return positions;
         }
 
