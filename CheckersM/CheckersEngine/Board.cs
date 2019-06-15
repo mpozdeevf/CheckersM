@@ -587,6 +587,33 @@ namespace CheckersEngine
             return positions;
         }
 
+        public BitBoard GetBitBoardFromBoard()
+        {
+            var whiteCheckers = new StringBuilder();
+            var blackCheckers = new StringBuilder();
+            var whiteKings = new StringBuilder();
+            var blackKings = new StringBuilder();
+
+            for (var i = 0; i < BoardLength; i++)
+            {
+                for (var j = 0; j < BoardLength; j++)
+                {
+                    whiteCheckers.Append(_boardState[i, j] == CellType.WhiteChecker ? '1' : '0');
+
+                    blackCheckers.Append(_boardState[i, j] == CellType.BlackChecker ? '1' : '0');
+
+                    whiteKings.Append(_boardState[i, j] == CellType.WhiteKing ? '1' : '0');
+
+                    blackKings.Append(_boardState[i, j] == CellType.BlackKing ? '1' : '0');
+                }
+            }
+
+            return new BitBoard(Convert.ToInt64(whiteCheckers.ToString(), 2),
+                Convert.ToInt64(whiteKings.ToString(), 2),
+                Convert.ToInt64(blackCheckers.ToString(), 2),
+                Convert.ToInt64(blackKings.ToString(), 2));
+        }
+
         public BitBoard GetBitBoardFromBoard(CellType[,] boardState)
         {
             var whiteCheckers = new StringBuilder();
