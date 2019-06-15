@@ -18,10 +18,12 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-document.getElementById("startButton").addEventListener("click", function (event) {
+var startButton = document.getElementById("startButton")
+startButton.addEventListener("click", function (event) {
     connection.invoke("StartGame").catch(function (err) {
         return console.error(err.toString());
     });
+    startButton.style.display = "none";
     event.preventDefault();
 });
 
