@@ -35,18 +35,18 @@ namespace CheckersEngineVisualTest
             //    Console.WriteLine();
             //}
 
-            //WatchPositions();
-            var n = -6172840797264674816;
-            var str = Convert.ToString(n, 2);
-            long r = 0;
-            for (var i = 0; i < str.Length; i++)
-            {
-                if (str[i] == '1')
-                {
-                    r += (long)Math.Pow(2, 64 - i - 1);
-                }
-            }
-            Console.WriteLine(str);
+            WatchPositions();
+            //var n = -6172840797264674816;
+            //var str = Convert.ToString(n, 2);
+            //long r = 0;
+            //for (var i = 0; i < str.Length; i++)
+            //{
+            //    if (str[i] == '1')
+            //    {
+            //        r += (long)Math.Pow(2, 64 - i - 1);
+            //    }
+            //}
+            //Console.WriteLine(str);
 
 
         }
@@ -80,8 +80,8 @@ namespace CheckersEngineVisualTest
 
         private static void WatchPositions()
         {
-            //var board = new Board(new BitBoard(0, Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2), 0,
-            //    Convert.ToInt64(new string('0', 18) + "1" + new string('0', 15) + "101" + new string('0', 27), 2)));
+            var board = new Board(new BitBoard(0, Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2), 0,
+                Convert.ToInt64(new string('0', 18) + "1" + new string('0', 15) + "101" + new string('0', 27), 2)));
 
             //var board = new Board(new BitBoard(0, 0, 0, 
             //    Convert.ToInt64(new string('0', 9) + "1" + new string('0', 54), 2)));
@@ -89,29 +89,29 @@ namespace CheckersEngineVisualTest
             //var board = new Board(new BitBoard(Convert.ToInt64(new string('0', 27) + "1" + new string('0', 36), 2), 0,
             //    Convert.ToInt64(new string('0', 36) + "101" + new string('0', 25), 2), 0));
 
-            var board = new Board();
+            //var board = new Board();
 
-            var bitBoard = board.GetBitBoardFromBoard();
-            var str = Convert.ToString(bitBoard.WhiteCheckers, 2);
-            for (var i = 0; i < str.Length; i++)
-            {
-                if (str[i] == '1')
-                {
-
-                }
-            }
-
-            //var boardState = board.GetBoardState();
-            //for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+            //var bitBoard = board.GetBitBoardFromBoard();
+            //var str = Convert.ToString(bitBoard.WhiteCheckers, 2);
+            //for (var i = 0; i < str.Length; i++)
             //{
-            //    for (var j = 0; j < boardState.GetLength(1); j++)
+            //    if (str[i] == '1')
             //    {
-            //        Console.Write((int)boardState[i, j] + " ");
+
             //    }
-            //    Console.WriteLine();
             //}
-            //Console.WriteLine();
-            //var positions = board.GetAllPossiblePositions(PlayerType.White);
+
+            var boardState = board.GetBoardState();
+            for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+            {
+                for (var j = 0; j < boardState.GetLength(1); j++)
+                {
+                    Console.Write((int)boardState[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+            var positions = board.GetAllPossiblePositions(PlayerType.White);
             //var k = 0;
             //var rnd = new Random();
             //while (positions.Count > 0)
@@ -133,20 +133,20 @@ namespace CheckersEngineVisualTest
             //    positions = board.GetAllPossiblePositions(k % 2 == 0 ? PlayerType.White : PlayerType.Black);
             //}
 
-            //foreach (var position in positions)
-            //{
-            //    board = new Board(position[position.Count - 1]);
-            //    boardState = board.GetBoardState();
-            //    for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
-            //    {
-            //        for (var j = 0; j < boardState.GetLength(1); j++)
-            //        {
-            //            Console.Write((int)boardState[i, j] + " ");
-            //        }
-            //        Console.WriteLine();
-            //    }
-            //    Console.WriteLine();
-            //}
+            foreach (var position in positions)
+            {
+                board = new Board(position[position.Count - 1]);
+                boardState = board.GetBoardState();
+                for (var i = boardState.GetLength(0) - 1; i >= 0; i--)
+                {
+                    for (var j = 0; j < boardState.GetLength(1); j++)
+                    {
+                        Console.Write((int)boardState[i, j] + " ");
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

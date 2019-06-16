@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace CheckersEngine
 {
@@ -54,6 +55,20 @@ namespace CheckersEngine
 
             BlackKingsStr = Convert.ToString(BlackKings, 2);
             BlackKingsStr = new string('0', 64 - BlackKingsStr.Length) + BlackKingsStr;
+        }
+
+        [JsonConstructor]
+        public BitBoard(long whiteCheckers, long whiteKings, long blackCheckers, long blackKings, 
+            string whiteCheckersStr, string whiteKingsStr, string blackCheckersStr, string blackKingsStr)
+        {
+            WhiteCheckers = whiteCheckers;
+            WhiteKings = whiteKings;
+            BlackCheckers = blackCheckers;
+            BlackKings = blackKings;
+            WhiteCheckersStr = whiteCheckersStr;
+            WhiteKingsStr = whiteKingsStr;
+            BlackCheckersStr = blackCheckersStr;
+            BlackKingsStr = blackKingsStr;
         }
 
         public override bool Equals(object obj)

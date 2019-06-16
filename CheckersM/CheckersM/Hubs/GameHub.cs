@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CheckersAI;
 using CheckersEngine;
 using CheckersM.Game;
+using CheckersM.Models;
+using CheckersM.Services;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
@@ -13,7 +16,13 @@ namespace CheckersM.Hubs
 {
     public class GameHub : Hub
     {
-        private readonly Dictionary<string, PlayerData> _playersData = new Dictionary<string, PlayerData>();
+        //private readonly Dictionary<string, PlayerData> _playersData = new Dictionary<string, PlayerData>();
+        private readonly GameService _gameService;
+
+        public GameHub(GameService gameService)
+        {
+            _gameService = gameService;
+        }
 
         public async Task SendMessage(string user, string message)
         {
@@ -22,35 +31,60 @@ namespace CheckersM.Hubs
 
         public async Task StartGame()
         {
-            if (!_playersData.ContainsKey(Context.ConnectionId))
+            List<List<BitBoard>> positions;
+            BitBoard bitBoard;
+            //var rnd = new Random();
+            //var playerType = (PlayerType) rnd.Next(0, 1);
+            var playerType = PlayerType.White;
+
+            var board = new Board();
+            positions = board.GetAllPossiblePositions(playerType);
+            bitBoard = board.GetBitBoardFromBoard();
+
+            //if (playerType == PlayerType.White)
+            //{
+            //    var board = new Board();
+            //    positions = board.GetAllPossiblePositions(playerType);
+            //    bitBoard = board.GetBitBoardFromBoard();
+            //}
+            //else
+            //{
+            //    var aiMove = ArtificialIntelligence.GetNextMove(new Board().GetAllPossiblePositions(PlayerType.White));
+            //    var board = new Board(aiMove[aiMove.Count - 1]);
+            //    positions = board.GetAllPossiblePositions(playerType);
+            //    bitBoard = board.GetBitBoardFromBoard();
+            //}
+            var game = new Models.Game
             {
-                List<List<BitBoard>> positions;
-                BitBoard bitBoard;
-                //var rnd = new Random();
-                //var playerType = (PlayerType) rnd.Next(0, 1);
-                var playerType = PlayerType.White;
+                ConnectionId = Context.ConnectionId,
+                BitBoard = bitBoard,
+                PlayerType = playerType,
+                PossiblePositions = positions
+            };
+            _gameService.Create(game);
+            await Clients.Caller.SendAsync("Start", JsonConvert.SerializeObject(game));
+        }
 
-                var board = new Board();
-                positions = board.GetAllPossiblePositions(playerType);
-                bitBoard = board.GetBitBoardFromBoard();
+        public async Task PlayGame(string jsonBitboard)
+        {
+            var bitBoard = JsonConvert.DeserializeObject<BitBoard>(jsonBitboard);
+            var board = new Board(bitBoard);
+            var position = ArtificialIntelligence
+                .GetNextMove(board.GetAllPossiblePositions(PlayerType.Black));
+            bitBoard = position[position.Count - 1];
+            board = new Board(bitBoard);
+            var newGame = _gameService.Get(Context.ConnectionId);
+            newGame.BitBoard = bitBoard;
+            newGame.PossiblePositions = board.GetAllPossiblePositions(newGame.PlayerType);
+            _gameService.Update(Context.ConnectionId, newGame);
+            Thread.Sleep(4000);
+            await Clients.Caller.SendAsync("Start", JsonConvert.SerializeObject(newGame));
+        }
 
-                //if (playerType == PlayerType.White)
-                //{
-                //    var board = new Board();
-                //    positions = board.GetAllPossiblePositions(playerType);
-                //    bitBoard = board.GetBitBoardFromBoard();
-                //}
-                //else
-                //{
-                //    var aiMove = ArtificialIntelligence.GetNextMove(new Board().GetAllPossiblePositions(PlayerType.White));
-                //    var board = new Board(aiMove[aiMove.Count - 1]);
-                //    positions = board.GetAllPossiblePositions(playerType);
-                //    bitBoard = board.GetBitBoardFromBoard();
-                //}
-                _playersData[Context.ConnectionId] = new PlayerData(playerType, positions);
-                var gameData = new GameData(bitBoard, _playersData[Context.ConnectionId]);
-                await Clients.Caller.SendAsync("Start",JsonConvert.SerializeObject(gameData));
-            }
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            _gameService.Remove(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

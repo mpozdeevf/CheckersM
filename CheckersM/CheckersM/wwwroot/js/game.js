@@ -5,11 +5,8 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/game").build();
 document.getElementById("startButton").disabled = true;
 
 connection.on("Start", function (json) {
-    //var encodedMsg = json;
-    //var li = document.createElement("li");
-    //li.textContent = encodedMsg;
-    //document.getElementById("messagesList").appendChild(li);
-    drawBoard(json);
+    var obj = JSON.parse(json);
+    drawBoard(obj.BitBoard, obj.PossiblePositions);
 });
 
 connection.start().then(function () {
@@ -18,7 +15,7 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-var startButton = document.getElementById("startButton")
+var startButton = document.getElementById("startButton");
 startButton.addEventListener("click", function (event) {
     connection.invoke("StartGame").catch(function (err) {
         return console.error(err.toString());
@@ -27,15 +24,29 @@ startButton.addEventListener("click", function (event) {
     event.preventDefault();
 });
 
-function drawBoard(json) {
-    var obj = JSON.parse(json);
-    var str = obj.BitBoard.WhiteCheckersStr;
+function drawBoard(bitBoard, positions) {
+    clearBoard();
+    drawCheckers(bitBoard.WhiteCheckersStr, "w");
+    drawCheckers(bitBoard.BlackCheckersStr, "b");
+    drawCheckers(bitBoard.WhiteKingsStr, "W");
+    drawCheckers(bitBoard.BlackKingsStr, "B");
+    play(positions);
+}
 
-    str = obj.BitBoard.BlackCheckersStr;
-    drawCheckers(obj.BitBoard.WhiteCheckersStr, "w");
-    drawCheckers(obj.BitBoard.BlackCheckersStr, "b");
-    drawCheckers(obj.BitBoard.WhiteKingsStr, "W");
-    drawCheckers(obj.BitBoard.BlackKingsStr, "B");
+function drawClientBoard(bitBoard) {
+    clearBoard();
+    drawCheckers(bitBoard.WhiteCheckersStr, "w");
+    drawCheckers(bitBoard.BlackCheckersStr, "b");
+    drawCheckers(bitBoard.WhiteKingsStr, "W");
+    drawCheckers(bitBoard.BlackKingsStr, "B");
+}
+
+function clearBoard() {
+    for (var i = 0; i < 64; i++) {
+        var id = Math.floor(i / 8).toString() + (i % 8).toString();
+        var e = document.getElementById(id);
+        e.innerText = "";
+    }
 }
 
 function drawCheckers(str, letter) {
@@ -46,4 +57,18 @@ function drawCheckers(str, letter) {
             e.innerText = letter;
         }
     }
+}
+
+function play(positions) {
+    var n = Math.floor(Math.random() * positions.length);
+    var newJson = JSON.stringify(positions[n][positions[n].length - 1]);
+    setTimeout(drawClientBoard, 2000, positions[n][positions[n].length - 1]);
+    //drawClientBoard(positions[n][positions[n].length - 1]);
+    setTimeout(connection.invoke("PlayGame", newJson).catch(function(err) {
+            return console.error(err.toString());
+        }),
+        1000);
+    //connection.invoke("PlayGame", newJson).catch(function (err) {
+    //    return console.error(err.toString());
+    //});
 }

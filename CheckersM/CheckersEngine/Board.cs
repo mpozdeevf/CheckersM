@@ -643,15 +643,15 @@ namespace CheckersEngine
 
         private void ConvertBitBoardToBoard(BitBoard bitBoard)
         {
-            var whiteCheckers = Convert.ToString(bitBoard.WhiteCheckers, 2);
-            var blackCheckers = Convert.ToString(bitBoard.BlackCheckers, 2);
-            var whiteKings = Convert.ToString(bitBoard.WhiteKings, 2);
-            var blackKings = Convert.ToString(bitBoard.BlackKings, 2);
+            var whiteCheckers = bitBoard.WhiteCheckersStr;
+            var blackCheckers = bitBoard.BlackCheckersStr;
+            var whiteKings = bitBoard.WhiteKingsStr;
+            var blackKings = bitBoard.BlackKingsStr;
 
-            whiteCheckers = new string('0', BoardSize - whiteCheckers.Length) + whiteCheckers;
-            blackCheckers = new string('0', BoardSize - blackCheckers.Length) + blackCheckers;
-            whiteKings = new string('0', BoardSize - whiteKings.Length) + whiteKings;
-            blackKings = new string('0', BoardSize - blackKings.Length) + blackKings;
+            //whiteCheckers = new string('0', BoardSize - whiteCheckers.Length) + whiteCheckers;
+            //blackCheckers = new string('0', BoardSize - blackCheckers.Length) + blackCheckers;
+            //whiteKings = new string('0', BoardSize - whiteKings.Length) + whiteKings;
+            //blackKings = new string('0', BoardSize - blackKings.Length) + blackKings;
 
             for (var i = 0; i < BoardLength; i++)
             {
