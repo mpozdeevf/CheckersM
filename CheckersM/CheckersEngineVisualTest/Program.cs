@@ -19,12 +19,27 @@ namespace CheckersEngineVisualTest
                 Console.WriteLine();
                 WriteBoard(position.Last());
             }*/
-            Fight();
+            //Fight();
+            TestKings();
         }
 
         private static void TestKings()
         {
-            
+            string board = "WeWeWeWeeWeWeWeWWeWeWeWeeeeeeeeeeeeeeeeeeBeBeBeBBeBeBeBeeBeBeBeB";
+            while (true)
+            {
+                board = WhiteTurn(board);
+                if (board == null) break;
+                Console.WriteLine("White turn");
+                WriteBoard(board);
+                Console.WriteLine();
+                
+                board = BlackTurn(board);
+                if (board == null) break;
+                Console.WriteLine("Black turn");
+                WriteBoard(board);
+                Console.WriteLine();
+            }
         }
         
         private static void Fight()

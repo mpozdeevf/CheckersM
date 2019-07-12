@@ -7,10 +7,10 @@ namespace CheckersAI
 {
     public static class ArtificialIntelligence
     {
-        public static List<BitBoard> GetNextMove(List<List<BitBoard>> positions)
+        public static List<string> GetNextMove(List<List<string>> positions)
         {
             var rnd = new Random();
-            return positions[rnd.Next(0, positions.Count - 1)];
+            return positions.Count > 0 ? positions[rnd.Next(0, positions.Count - 1)] : null;
         }
     }
 }

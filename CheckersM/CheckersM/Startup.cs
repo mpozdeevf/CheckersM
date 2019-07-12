@@ -35,12 +35,6 @@ namespace CheckersM
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.Configure<BookstoreDatabaseSettings>(
-                Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-            services.AddSingleton<IBookstoreDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
-            services.AddSingleton<BookService>();
-
             services.Configure<GameDatabaseSettings>(
                 Configuration.GetSection(nameof(GameDatabaseSettings)));
             services.AddSingleton<IGameDatabaseSettings>(sp =>

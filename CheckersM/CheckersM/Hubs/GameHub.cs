@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckersAI;
 using CheckersEngine;
-using CheckersM.Game;
-using CheckersM.Models;
 using CheckersM.Services;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -16,7 +11,6 @@ namespace CheckersM.Hubs
 {
     public class GameHub : Hub
     {
-        //private readonly Dictionary<string, PlayerData> _playersData = new Dictionary<string, PlayerData>();
         private readonly GameService _gameService;
 
         public GameHub(GameService gameService)
@@ -24,40 +18,18 @@ namespace CheckersM.Hubs
             _gameService = gameService;
         }
 
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.Caller.SendAsync("ReceiveMessage", Context.ConnectionId, message);
-        }
-
         public async Task StartGame()
         {
-            List<List<BitBoard>> positions;
-            BitBoard bitBoard;
-            //var rnd = new Random();
-            //var playerType = (PlayerType) rnd.Next(0, 1);
             var playerType = PlayerType.White;
-
-            var board = new Board();
-            positions = board.GetAllPossiblePositions(playerType);
-            bitBoard = board.GetBitBoardFromBoard();
-
-            //if (playerType == PlayerType.White)
-            //{
-            //    var board = new Board();
-            //    positions = board.GetAllPossiblePositions(playerType);
-            //    bitBoard = board.GetBitBoardFromBoard();
-            //}
-            //else
-            //{
-            //    var aiMove = ArtificialIntelligence.GetNextMove(new Board().GetAllPossiblePositions(PlayerType.White));
-            //    var board = new Board(aiMove[aiMove.Count - 1]);
-            //    positions = board.GetAllPossiblePositions(playerType);
-            //    bitBoard = board.GetBitBoardFromBoard();
-            //}
+            
+            var engine = WhiteTurn(null);
+            var positions = engine.GetPossiblePositions();
+            var board = engine.GetCurrentPosition();
+            
             var game = new Models.Game
             {
                 ConnectionId = Context.ConnectionId,
-                BitBoard = bitBoard,
+                Board = board,
                 PlayerType = playerType,
                 PossiblePositions = positions
             };
@@ -65,19 +37,24 @@ namespace CheckersM.Hubs
             await Clients.Caller.SendAsync("Start", JsonConvert.SerializeObject(game));
         }
 
-        public async Task PlayGame(string jsonBitboard)
+        public async void PlayGame(string stringBoard)
         {
-            var bitBoard = JsonConvert.DeserializeObject<BitBoard>(jsonBitboard);
-            var board = new Board(bitBoard);
-            var position = ArtificialIntelligence
-                .GetNextMove(board.GetAllPossiblePositions(PlayerType.Black));
-            bitBoard = position[position.Count - 1];
-            board = new Board(bitBoard);
-            var newGame = _gameService.Get(Context.ConnectionId);
-            newGame.BitBoard = bitBoard;
-            newGame.PossiblePositions = board.GetAllPossiblePositions(newGame.PlayerType);
-            _gameService.Update(Context.ConnectionId, newGame);
             Thread.Sleep(4000);
+            var engine = BlackTurn(stringBoard);
+            var positions = engine.GetPossiblePositions();
+            if (positions == null || positions.Count == 0)
+            {
+                await Clients.Caller.SendAsync("End", "White won");
+                return;
+            }
+            var position = ArtificialIntelligence
+                .GetNextMove(positions);
+            var board = position[position.Count - 1];
+            var newGame = _gameService.Get(Context.ConnectionId);
+            newGame.Board = board;
+            var newPositions = WhiteTurn(board).GetPossiblePositions();
+            newGame.PossiblePositions = newPositions;
+            _gameService.Update(Context.ConnectionId, newGame);
             await Clients.Caller.SendAsync("Start", JsonConvert.SerializeObject(newGame));
         }
 
@@ -85,6 +62,18 @@ namespace CheckersM.Hubs
         {
             _gameService.Remove(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
+        }
+        
+        private static Engine WhiteTurn(string board)
+        {
+            var engine = new WhiteCheckersEngine(board);
+            return engine;
+        }
+        
+        private static Engine BlackTurn(string board)
+        {
+            var engine = new BlackCheckersEngine(board);
+            return engine;
         }
     }
 }

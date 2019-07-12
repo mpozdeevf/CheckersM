@@ -6,7 +6,11 @@ document.getElementById("startButton").disabled = true;
 
 connection.on("Start", function (json) {
     var obj = JSON.parse(json);
-    drawBoard(obj.BitBoard, obj.PossiblePositions);
+    drawBoard(obj.Board, obj.PossiblePositions);
+});
+
+connection.on("End", function (message) {
+    endOfTheGame(message)
 });
 
 connection.start().then(function () {
@@ -24,21 +28,15 @@ startButton.addEventListener("click", function (event) {
     event.preventDefault();
 });
 
-function drawBoard(bitBoard, positions) {
+function drawBoard(board, positions) {
     clearBoard();
-    drawCheckers(bitBoard.WhiteCheckersStr, "w");
-    drawCheckers(bitBoard.BlackCheckersStr, "b");
-    drawCheckers(bitBoard.WhiteKingsStr, "W");
-    drawCheckers(bitBoard.BlackKingsStr, "B");
+    drawCheckers(board);
     play(positions);
 }
 
-function drawClientBoard(bitBoard) {
+function drawClientBoard(board) {
     clearBoard();
-    drawCheckers(bitBoard.WhiteCheckersStr, "w");
-    drawCheckers(bitBoard.BlackCheckersStr, "b");
-    drawCheckers(bitBoard.WhiteKingsStr, "W");
-    drawCheckers(bitBoard.BlackKingsStr, "B");
+    drawCheckers(board);
 }
 
 function clearBoard() {
@@ -49,26 +47,30 @@ function clearBoard() {
     }
 }
 
-function drawCheckers(str, letter) {
+function drawCheckers(str) {
     for (var i = 0; i < str.length; i++) {
-        if (str[i] === "1") {
+        if (str[i] !== "e") {
             var id = Math.floor(i / 8).toString() + (i % 8).toString();
             var e = document.getElementById(id);
-            e.innerText = letter;
+            e.innerText = str[i];
         }
     }
 }
 
 function play(positions) {
     var n = Math.floor(Math.random() * positions.length);
-    var newJson = JSON.stringify(positions[n][positions[n].length - 1]);
+    var board = positions[n][positions[n].length - 1];
     setTimeout(drawClientBoard, 2000, positions[n][positions[n].length - 1]);
     //drawClientBoard(positions[n][positions[n].length - 1]);
-    setTimeout(connection.invoke("PlayGame", newJson).catch(function(err) {
-            return console.error(err.toString());
-        }),
-        1000);
-    //connection.invoke("PlayGame", newJson).catch(function (err) {
-    //    return console.error(err.toString());
-    //});
+    // setTimeout(connection.invoke('PlayGame', board).catch(function (err) {
+    //         return console.error(err.toString());
+    //     }),
+    //     1000);
+    connection.invoke("PlayGame", board).catch(function (err) {
+       return console.error(err.toString());
+    });
+}
+
+function endOfTheGame(message) {
+    alert(message)
 }

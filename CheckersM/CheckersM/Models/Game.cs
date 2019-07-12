@@ -14,8 +14,8 @@ namespace CheckersM.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string ConnectionId { get; set; }
-        public BitBoard BitBoard { get; set; }
+        public string Board { get; set; }
         public PlayerType PlayerType { get; set; }
-        public List<List<BitBoard>> PossiblePositions { get; set; }
+        public List<List<string>> PossiblePositions { get; set; }
     }
 }

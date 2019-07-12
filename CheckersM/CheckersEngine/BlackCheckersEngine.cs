@@ -43,9 +43,9 @@ namespace CheckersEngine
             Array.Copy(ArrayBoard, tempBoard, BoardSize);
             if (i - 1 > -1 && j - 1 > -1 && tempBoard[i - 1, j - 1] == CheckerType.Empty)
             {
-                if (i - 1 == BoardLength - 1)
+                if (i - 1 == 0)
                 {
-                    tempBoard[i - 1, j - 1] = CheckerType.WhiteKing;
+                    tempBoard[i - 1, j - 1] = CheckerType.BlackKing;
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace CheckersEngine
             position = new List<string>();
             if (i - 1 > -1 && j + 1 < BoardLength && tempBoard[i - 1, j + 1] == CheckerType.Empty)
             {
-                if (i - 1 == BoardLength - 1)
+                if (i - 1 == 0)
                 {
                     tempBoard[i - 1, j + 1] = CheckerType.BlackKing;
                 }

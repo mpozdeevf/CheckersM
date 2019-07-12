@@ -35,7 +35,7 @@ namespace CheckersM.Services
             _games.ReplaceOne(book => book.ConnectionId == id, gameIn);
 
         public void Remove(Models.Game gameIn) =>
-            _games.DeleteOne(book => book.ConnectionId == gameIn.ConnectionId);
+            _games.DeleteOne(game => game.ConnectionId == gameIn.ConnectionId);
 
         public void Remove(string id) =>
             _games.DeleteOne(game => game.ConnectionId == id);
