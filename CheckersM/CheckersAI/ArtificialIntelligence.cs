@@ -7,6 +7,42 @@ namespace CheckersAI
 {
     public static class ArtificialIntelligence
     {
+        private static readonly int[] WhitePoints =
+        {
+            1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 2, 2, 2, 2,
+            3, 3, 3, 3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4, 4, 4,
+            5, 5, 5, 5, 5, 5, 5, 5,
+            6, 6, 6, 6, 6, 6, 6, 6,
+            7, 7, 7, 7, 7, 7, 7, 7,
+            8, 8, 8, 8, 8, 8, 8, 8
+        };
+
+        private static readonly int[] BlackPoints =
+        {
+            8, 8, 8, 8, 8, 8, 8, 8,
+            7, 7, 7, 7, 7, 7, 7, 7,
+            6, 6, 6, 6, 6, 6, 6, 6,
+            5, 5, 5, 5, 5, 5, 5, 5,
+            4, 4, 4, 4, 4, 4, 4, 4,
+            3, 3, 3, 3, 3, 3, 3, 3,
+            2, 2, 2, 2, 2, 2, 2, 2,
+            1, 1, 1, 1, 1, 1, 1, 1
+        };
+
+        private static readonly int[] TableWeights =
+        {
+            4, 4, 4, 4, 4, 4, 4, 4,
+            3, 3, 3, 3, 3, 3, 4, 4,
+            4, 4, 2, 2, 2, 2, 3, 3,
+            3, 3, 1, 1, 2, 2, 4, 4,
+            4, 4, 2, 2, 1, 1, 3, 3,
+            3, 3, 2, 2, 2, 2, 4, 4,
+            4, 4, 3, 3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4, 4, 4
+        };
+
         public static List<string> GetNextMove(List<List<string>> positions)
         {
             if (positions == null || positions.Count == 0) return null;
@@ -15,12 +51,12 @@ namespace CheckersAI
             foreach (var position in positions)
             {
                 var max = int.MinValue;
-                foreach (var checker in position[position.Count - 1])
+                for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (checker == 'b') max++;
-                    if (checker == 'B') max += 2;
-                    if (checker == 'w') max--;
-                    if (checker == 'W') max -= 2;
+                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
+                    if (position[position.Count - 1][i] == 'B') max += 9;
+                    if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
+                    if (position[position.Count - 1][i] == 'W') max -= 9;
                 }
 
                 max -= WhiteMax(position[position.Count - 1]);
@@ -49,12 +85,12 @@ namespace CheckersAI
             foreach (var position in positions)
             {
                 var max = int.MinValue;
-                foreach (var checker in position[position.Count - 1])
+                for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (checker == 'b') max--;
-                    if (checker == 'B') max -= 2;
-                    if (checker == 'w') max++;
-                    if (checker == 'W') max += 2;
+                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i];
+                    if (position[position.Count - 1][i] == 'B') max -= 9;
+                    if (position[position.Count - 1][i] == 'w') max += WhitePoints[i];
+                    if (position[position.Count - 1][i] == 'W') max += 9;
                 }
 
                 if (max > maxPos) maxPos = max;
