@@ -8,13 +8,11 @@ document.getElementById("startButton").disabled = true;
 
 connection.on("Start", function (json) {
     var obj = JSON.parse(json);
-    //counter++;
     setTimeout(drawBoard, 1500, obj.Position, obj.PossiblePositions);
-    //drawBoard(obj.Position, obj.PossiblePositions);
 });
 
 connection.on("End", function (message) {
-    endOfTheGame(message)
+    endOfTheGame(message);
 });
 
 connection.start().then(function () {
@@ -36,7 +34,6 @@ function drawBoard(position, positions) {
     for (var i = 0; i < position.length; i++) {
         setTimeout(drawCheckers, counter * 500, position[i]);
         counter++;
-        //drawCheckers(position[i]);
     }
     play(positions);
 }
@@ -45,7 +42,6 @@ function drawClientBoard(position, board) {
     for (var i = 0; i < position.length; i++) {
         setTimeout(drawCheckers, counter * 500, position[i]);
         counter++;
-        //drawCheckers(position[i]);
     }
     connection.invoke("PlayGame", board).catch(function (err) {
         return console.error(err.toString());
@@ -79,16 +75,9 @@ function drawCheckers(str) {
 function play(positions) {
     var n = Math.floor(Math.random() * positions.length);
     var board = positions[n][positions[n].length - 1];
-    //counter++;
     setTimeout(drawClientBoard, 1500, positions[n], board);
 }
 
 function endOfTheGame(message) {
-    alert(message)
-}
-
-function sleep(seconds) {
-    setTimeout(function () {
-        var a = 0;
-    }, seconds);
+    alert(message);
 }
