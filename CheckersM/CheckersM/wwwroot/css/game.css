@@ -10,6 +10,8 @@
     width: 50px;
     border: 1px solid black;
     text-align: center;
+    font-weight: bold;
+    font-size: large;
 }
 
 .rowName {
@@ -18,4 +20,8 @@
 
 .columnName {
     text-align: center;
+}
+
+.colored{
+    background-color: chocolate;
 }

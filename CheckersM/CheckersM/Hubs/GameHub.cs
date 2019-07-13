@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckersAI;
@@ -21,15 +22,15 @@ namespace CheckersM.Hubs
         public async Task StartGame()
         {
             var playerType = PlayerType.White;
-            
+
             var engine = WhiteTurn(null);
             var positions = engine.GetPossiblePositions();
-            var board = engine.GetCurrentPosition();
-            
+            var position = new List<string> {engine.GetCurrentPosition()};
+
             var game = new Models.Game
             {
                 ConnectionId = Context.ConnectionId,
-                Board = board,
+                Position = position,
                 PlayerType = playerType,
                 PossiblePositions = positions
             };
@@ -39,7 +40,7 @@ namespace CheckersM.Hubs
 
         public async void PlayGame(string stringBoard)
         {
-            Thread.Sleep(4000);
+            //Thread.Sleep(4000);
             var engine = BlackTurn(stringBoard);
             var positions = engine.GetPossiblePositions();
             if (positions == null || positions.Count == 0)
@@ -47,12 +48,12 @@ namespace CheckersM.Hubs
                 await Clients.Caller.SendAsync("End", "White won");
                 return;
             }
+
             var position = ArtificialIntelligence
                 .GetNextMove(positions);
-            var board = position[position.Count - 1];
             var newGame = _gameService.Get(Context.ConnectionId);
-            newGame.Board = board;
-            var newPositions = WhiteTurn(board).GetPossiblePositions();
+            newGame.Position = position;
+            var newPositions = WhiteTurn(position[position.Count - 1]).GetPossiblePositions();
             newGame.PossiblePositions = newPositions;
             _gameService.Update(Context.ConnectionId, newGame);
             await Clients.Caller.SendAsync("Start", JsonConvert.SerializeObject(newGame));
@@ -63,13 +64,13 @@ namespace CheckersM.Hubs
             _gameService.Remove(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
-        
+
         private static Engine WhiteTurn(string board)
         {
             var engine = new WhiteCheckersEngine(board);
             return engine;
         }
-        
+
         private static Engine BlackTurn(string board)
         {
             var engine = new BlackCheckersEngine(board);

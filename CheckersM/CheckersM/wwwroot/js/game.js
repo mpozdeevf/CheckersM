@@ -6,7 +6,8 @@ document.getElementById("startButton").disabled = true;
 
 connection.on("Start", function (json) {
     var obj = JSON.parse(json);
-    drawBoard(obj.Board, obj.PossiblePositions);
+    setTimeout(drawBoard, 3000, obj.Position, obj.PossiblePositions);
+    //drawBoard(obj.Position, obj.PossiblePositions);
 });
 
 connection.on("End", function (message) {
@@ -28,15 +29,20 @@ startButton.addEventListener("click", function (event) {
     event.preventDefault();
 });
 
-function drawBoard(board, positions) {
-    clearBoard();
-    drawCheckers(board);
+function drawBoard(position, positions) {
+    for (var i = 0; i < position.length; i++) {
+        drawCheckers(position[i]);
+    }
     play(positions);
 }
 
-function drawClientBoard(board) {
-    clearBoard();
-    drawCheckers(board);
+function drawClientBoard(position, board) {
+    for (var i = 0; i < position.length; i++) {
+        drawCheckers(position[i]);
+    }
+    connection.invoke("PlayGame", board).catch(function (err) {
+        return console.error(err.toString());
+    });
 }
 
 function clearBoard() {
@@ -48,10 +54,16 @@ function clearBoard() {
 }
 
 function drawCheckers(str) {
+    clearBoard();
     for (var i = 0; i < str.length; i++) {
         if (str[i] !== "e") {
             var id = Math.floor(i / 8).toString() + (i % 8).toString();
             var e = document.getElementById(id);
+            if (str[i] === 'w' || str[i] === 'W') {
+                e.style.color = 'yellow';
+            } else {
+                e.style.color = 'black';
+            }
             e.innerText = str[i];
         }
     }
@@ -60,17 +72,14 @@ function drawCheckers(str) {
 function play(positions) {
     var n = Math.floor(Math.random() * positions.length);
     var board = positions[n][positions[n].length - 1];
-    setTimeout(drawClientBoard, 2000, positions[n][positions[n].length - 1]);
-    //drawClientBoard(positions[n][positions[n].length - 1]);
-    // setTimeout(connection.invoke('PlayGame', board).catch(function (err) {
-    //         return console.error(err.toString());
-    //     }),
-    //     1000);
-    connection.invoke("PlayGame", board).catch(function (err) {
-       return console.error(err.toString());
-    });
+    setTimeout(drawClientBoard, 3000, positions[n], board);
 }
 
 function endOfTheGame(message) {
     alert(message)
+}
+
+function sleep(seconds) {
+    var e = new Date().getTime() + (seconds * 1000);
+    while (new Date().getTime() <= e){} 
 }
