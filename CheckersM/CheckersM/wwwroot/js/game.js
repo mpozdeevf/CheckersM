@@ -2,11 +2,14 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/game").build();
 
+var counter = 0;
+
 document.getElementById("startButton").disabled = true;
 
 connection.on("Start", function (json) {
     var obj = JSON.parse(json);
-    setTimeout(drawBoard, 3000, obj.Position, obj.PossiblePositions);
+    //counter++;
+    setTimeout(drawBoard, 1500, obj.Position, obj.PossiblePositions);
     //drawBoard(obj.Position, obj.PossiblePositions);
 });
 
@@ -31,14 +34,18 @@ startButton.addEventListener("click", function (event) {
 
 function drawBoard(position, positions) {
     for (var i = 0; i < position.length; i++) {
-        drawCheckers(position[i]);
+        setTimeout(drawCheckers, counter * 500, position[i]);
+        counter++;
+        //drawCheckers(position[i]);
     }
     play(positions);
 }
 
 function drawClientBoard(position, board) {
     for (var i = 0; i < position.length; i++) {
-        drawCheckers(position[i]);
+        setTimeout(drawCheckers, counter * 500, position[i]);
+        counter++;
+        //drawCheckers(position[i]);
     }
     connection.invoke("PlayGame", board).catch(function (err) {
         return console.error(err.toString());
@@ -72,7 +79,8 @@ function drawCheckers(str) {
 function play(positions) {
     var n = Math.floor(Math.random() * positions.length);
     var board = positions[n][positions[n].length - 1];
-    setTimeout(drawClientBoard, 3000, positions[n], board);
+    //counter++;
+    setTimeout(drawClientBoard, 1500, positions[n], board);
 }
 
 function endOfTheGame(message) {
@@ -80,6 +88,7 @@ function endOfTheGame(message) {
 }
 
 function sleep(seconds) {
-    var e = new Date().getTime() + (seconds * 1000);
-    while (new Date().getTime() <= e){} 
+    setTimeout(function () {
+        var a = 0;
+    }, seconds);
 }

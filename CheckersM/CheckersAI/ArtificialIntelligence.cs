@@ -10,25 +10,37 @@ namespace CheckersAI
         private static readonly int[] WhitePoints =
         {
             1, 1, 1, 1, 1, 1, 1, 1,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            3, 3, 3, 3, 3, 3, 3, 3,
-            4, 4, 4, 4, 4, 4, 4, 4,
-            5, 5, 5, 5, 5, 5, 5, 5,
-            6, 6, 6, 6, 6, 6, 6, 6,
-            7, 7, 7, 7, 7, 7, 7, 7,
-            8, 8, 8, 8, 8, 8, 8, 8
+            2, 2, 2, 2, 2, 2, 3, 3,
+            6, 6, 4, 4, 4, 4, 5, 5,
+            9, 9, 7, 7, 8, 8, 10, 10,
+            14, 14, 12, 12, 11, 11, 13, 13,
+            16, 16, 15, 15, 15, 15, 17, 17,
+            19, 19, 18, 18, 18, 18, 18, 18,
+            20, 20, 20, 20, 20, 20, 20, 20
         };
 
         private static readonly int[] BlackPoints =
         {
-            8, 8, 8, 8, 8, 8, 8, 8,
-            7, 7, 7, 7, 7, 7, 7, 7,
-            6, 6, 6, 6, 6, 6, 6, 6,
-            5, 5, 5, 5, 5, 5, 5, 5,
-            4, 4, 4, 4, 4, 4, 4, 4,
-            3, 3, 3, 3, 3, 3, 3, 3,
-            2, 2, 2, 2, 2, 2, 2, 2,
+            20, 20, 20, 20, 20, 20, 20, 20,
+            18, 18, 18, 18, 18, 18, 19, 19,
+            17, 17, 15, 15, 15, 15, 16, 16,
+            13, 13, 11, 11, 12, 12, 14, 14,
+            10, 10, 8, 8, 7, 7, 9, 9,
+            5, 5, 4, 4, 4, 4, 6, 6,
+            3, 3, 2, 2, 2, 2, 2, 2,
             1, 1, 1, 1, 1, 1, 1, 1
+        };
+
+        private static readonly int[] KingPoints =
+        {
+            21, 21, 21, 21, 21, 21, 21, 21,
+            21, 22, 22, 22, 22, 22, 22, 21,
+            21, 22, 23, 23, 23, 23, 22, 21,
+            21, 22, 23, 24, 24, 23, 22, 21,
+            21, 22, 23, 24, 24, 23, 22, 21,
+            21, 22, 23, 23, 23, 23, 22, 21,
+            21, 22, 22, 22, 22, 22, 22, 21,
+            21, 21, 21, 21, 21, 21, 21, 21
         };
 
         private static readonly int[] TableWeights =
@@ -53,10 +65,10 @@ namespace CheckersAI
                 var max = int.MinValue;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
-                    if (position[position.Count - 1][i] == 'B') max += 9;
+                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i] * 2;
+                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i] * 2;
                     if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
-                    if (position[position.Count - 1][i] == 'W') max -= 9;
+                    if (position[position.Count - 1][i] == 'W') max -= KingPoints[i];
                 }
 
                 max -= WhiteMax(position[position.Count - 1]);
@@ -87,10 +99,10 @@ namespace CheckersAI
                 var max = int.MinValue;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i];
-                    if (position[position.Count - 1][i] == 'B') max -= 9;
+                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i] * 2;
+                    if (position[position.Count - 1][i] == 'B') max -= KingPoints[i] * 2;
                     if (position[position.Count - 1][i] == 'w') max += WhitePoints[i];
-                    if (position[position.Count - 1][i] == 'W') max += 9;
+                    if (position[position.Count - 1][i] == 'W') max += KingPoints[i];
                 }
 
                 if (max > maxPos) maxPos = max;
