@@ -7,6 +7,8 @@ namespace CheckersAI
 {
     public static class ArtificialIntelligence
     {
+        private const int Depth = 2;
+
         private static readonly int[] WhitePoints =
         {
             1, 1, 1, 1, 1, 1, 1, 1,
@@ -50,16 +52,16 @@ namespace CheckersAI
             var maxPos = int.MinValue;
             foreach (var position in positions)
             {
-                var max = int.MinValue;
+                var max = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i] * 2;
-                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i] * 2;
+                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
+                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i];
                     if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
                     if (position[position.Count - 1][i] == 'W') max -= KingPoints[i];
                 }
 
-                max -= WhiteMax(position[position.Count - 1]);
+                max -= WhiteMax(position[position.Count - 1], 0);
                 if (max > maxPos)
                 {
                     greatPos = new List<List<string>> {position};
@@ -76,7 +78,31 @@ namespace CheckersAI
             return greatPos[rnd.Next(0, greatPos.Count - 1)];
         }
 
-        private static int WhiteMax(string board)
+        private static int BlackMax(string board, int currentDepth)
+        {
+            var engine = new BlackCheckersEngine(board);
+            var positions = engine.GetPossiblePositions();
+            if (positions == null || positions.Count == 0) return 0;
+            var maxPos = int.MinValue;
+            foreach (var position in positions)
+            {
+                var max = 0;
+                for (var i = 0; i < position[position.Count - 1].Length; i++)
+                {
+                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
+                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i];
+                    if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
+                    if (position[position.Count - 1][i] == 'W') max -= KingPoints[i];
+                }
+
+                max -= WhiteMax(position[position.Count - 1], currentDepth);
+                if (max > maxPos) maxPos = max;
+            }
+
+            return maxPos;
+        }
+
+        private static int WhiteMax(string board, int currentDepth)
         {
             var engine = new WhiteCheckersEngine(board);
             var positions = engine.GetPossiblePositions();
@@ -84,13 +110,18 @@ namespace CheckersAI
             var maxPos = int.MinValue;
             foreach (var position in positions)
             {
-                var max = int.MinValue;
+                var max = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i] * 2;
-                    if (position[position.Count - 1][i] == 'B') max -= KingPoints[i] * 2;
+                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i];
+                    if (position[position.Count - 1][i] == 'B') max -= KingPoints[i];
                     if (position[position.Count - 1][i] == 'w') max += WhitePoints[i];
                     if (position[position.Count - 1][i] == 'W') max += KingPoints[i];
+                }
+
+                if (currentDepth < Depth)
+                {
+                    max -= BlackMax(position[position.Count - 1], currentDepth + 1);
                 }
 
                 if (max > maxPos) maxPos = max;

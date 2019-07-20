@@ -27,6 +27,7 @@ namespace CheckersEngine
             else
             {
                 stringBoard = "weweweweewewewewweweweweeeeeeeeeeeeeeeeeebebebebbebebebeebebebeb";
+                //stringBoard = "eeweeeeeebebeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
                 ArrayBoard = GetArrayBoard(stringBoard);
             }
         }
@@ -191,98 +192,119 @@ namespace CheckersEngine
             int i, int j, List<string> position, CheckerType[,] board)
         {
             var tempBoard = new CheckerType[BoardLength, BoardLength];
-            var isKingCreated = false;
             Array.Copy(board, tempBoard, BoardSize);
             if (i + 1 < BoardLength && j + 1 < BoardLength && enemies.Contains(board[i + 1, j + 1])
                 && i + 2 < BoardLength && j + 2 < BoardLength && board[i + 2, j + 2] == CheckerType.Empty)
             {
                 if (tempBoard[i, j] == CheckerType.WhiteChecker && i + 2 == BoardLength - 1)
                 {
-                    isKingCreated = true;
                     tempBoard[i + 2, j + 2] = CheckerType.WhiteKing;
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i + 1, j + 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetKingAttackPositions(positions, enemies, i + 2, j + 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetKingAttackPositions(positions, enemies, i + 2, j + 2, tempPositionList, tempBoard);
                 }
                 else
                 {
                     tempBoard[i + 2, j + 2] = tempBoard[i, j];
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i + 1, j + 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetCheckerAttackPositions(positions, enemies, i + 2, j + 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetCheckerAttackPositions(positions, enemies, i + 2, j + 2, tempPositionList,
+                        tempBoard);
                 }
             }
 
             Array.Copy(board, tempBoard, BoardSize);
             if (i + 1 < BoardLength && j - 1 > -1 && enemies.Contains(board[i + 1, j - 1])
-                && i + 2 < BoardLength && j - 2 > -1 && board[i + 2, j - 2] == CheckerType.Empty &&
-                !isKingCreated)
+                && i + 2 < BoardLength && j - 2 > -1 && board[i + 2, j - 2] == CheckerType.Empty)
             {
                 if (tempBoard[i, j] == CheckerType.WhiteChecker && i + 2 == BoardLength - 1)
                 {
-                    isKingCreated = true;
                     tempBoard[i + 2, j - 2] = CheckerType.WhiteKing;
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i + 1, j - 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetKingAttackPositions(positions, enemies, i + 2, j - 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetKingAttackPositions(positions, enemies, i + 2, j - 2, tempPositionList, tempBoard);
                 }
                 else
                 {
                     tempBoard[i + 2, j - 2] = tempBoard[i, j];
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i + 1, j - 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetCheckerAttackPositions(positions, enemies, i + 2, j - 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetCheckerAttackPositions(positions, enemies, i + 2, j - 2, tempPositionList,
+                        tempBoard);
                 }
             }
 
             Array.Copy(board, tempBoard, BoardSize);
             if (i - 1 > -1 && j - 1 > -1 && enemies.Contains(board[i - 1, j - 1])
-                && i - 2 > -1 && j - 2 > -1 && board[i - 2, j - 2] == CheckerType.Empty &&
-                !isKingCreated)
+                && i - 2 > -1 && j - 2 > -1 && board[i - 2, j - 2] == CheckerType.Empty)
             {
                 if (tempBoard[i, j] == CheckerType.BlackChecker && i - 2 == 0)
                 {
-                    isKingCreated = true;
                     tempBoard[i - 2, j - 2] = CheckerType.BlackKing;
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i - 1, j - 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetKingAttackPositions(positions, enemies, i - 2, j - 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetKingAttackPositions(positions, enemies, i - 2, j - 2, tempPositionList, tempBoard);
                 }
                 else
                 {
                     tempBoard[i - 2, j - 2] = tempBoard[i, j];
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i - 1, j - 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetCheckerAttackPositions(positions, enemies, i - 2, j - 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetCheckerAttackPositions(positions, enemies, i - 2, j - 2, tempPositionList,
+                        tempBoard);
                 }
             }
 
             Array.Copy(board, tempBoard, BoardSize);
             if (i - 1 > -1 && j + 1 < BoardLength && enemies.Contains(board[i - 1, j + 1])
-                && i - 2 > -1 && j + 2 < BoardLength && board[i - 2, j + 2] == CheckerType.Empty &&
-                !isKingCreated)
+                && i - 2 > -1 && j + 2 < BoardLength && board[i - 2, j + 2] == CheckerType.Empty)
             {
                 if (tempBoard[i, j] == CheckerType.BlackChecker && i - 2 == 0)
                 {
                     tempBoard[i - 2, j + 2] = CheckerType.BlackKing;
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i - 1, j + 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetKingAttackPositions(positions, enemies, i - 2, j + 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetKingAttackPositions(positions, enemies, i - 2, j + 2, tempPositionList, tempBoard);
                 }
                 else
                 {
                     tempBoard[i - 2, j + 2] = tempBoard[i, j];
                     tempBoard[i, j] = CheckerType.Empty;
                     tempBoard[i - 1, j + 1] = CheckerType.Empty;
-                    position.Add(GetStringBoard(tempBoard));
-                    positions = GetCheckerAttackPositions(positions, enemies, i - 2, j + 2, position, tempBoard);
+                    var tempPositionArr = new string[position.Count];
+                    Array.Copy(position.ToArray(), tempPositionArr, tempPositionArr.Length);
+                    var tempPositionList = tempPositionArr.ToList();
+                    tempPositionList.Add(GetStringBoard(tempBoard));
+                    positions = GetCheckerAttackPositions(positions, enemies, i - 2, j + 2, tempPositionList,
+                        tempBoard);
                 }
             }
 
@@ -298,7 +320,7 @@ namespace CheckersEngine
             }
 
             if (position.Count == 0) return positions;
-            
+
             var tempPos = new string[position.Count];
             Array.Copy(position.ToArray(), tempPos, tempPos.Length);
             positions.Add(tempPos.ToList());
@@ -502,7 +524,7 @@ namespace CheckersEngine
             }
 
             if (position.Count == 0) return positions;
-            
+
             var tempPos = new string[position.Count];
             Array.Copy(position.ToArray(), tempPos, tempPos.Length);
             positions.Add(tempPos.ToList());

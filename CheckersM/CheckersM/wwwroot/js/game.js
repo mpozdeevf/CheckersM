@@ -13,7 +13,7 @@ connection.on("Start", function (json) {
     var obj = JSON.parse(json);
     possiblePositions = obj.PossiblePositions;
     currentPosition = obj.Position;
-    setTimeout(drawBoard, 500);
+    setTimeout(drawBoard, 0);
 });
 
 connection.on("End", function (message) {
@@ -38,10 +38,10 @@ startButton.addEventListener("click", function (event) {
 function drawBoard() {
     var counter = 0;
     for (var i = 0; i < currentPosition.length; i++) {
-        setTimeout(drawCheckers, counter * 500, currentPosition[i]);
+        setTimeout(drawCheckers, counter * 600, currentPosition[i]);
         counter++;
     }
-    setTimeout(play, counter * 500);
+    setTimeout(play, counter * 600);
 }
 
 function drawClientBoard(board) {
