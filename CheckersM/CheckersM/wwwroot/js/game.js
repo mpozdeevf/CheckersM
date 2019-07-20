@@ -2,8 +2,6 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/game").build();
 
-var counter = 0;
-
 var isUserTurn = false;
 
 var possiblePositions;
@@ -38,17 +36,16 @@ startButton.addEventListener("click", function (event) {
 });
 
 function drawBoard() {
+    var counter = 0;
     for (var i = 0; i < currentPosition.length; i++) {
-        setTimeout(drawCheckers, 0, currentPosition[i]);
+        setTimeout(drawCheckers, counter * 500, currentPosition[i]);
         counter++;
     }
-    play();
+    setTimeout(play, counter * 500);
 }
 
-function drawClientBoard(position, board) {
-    for (var i = 0; i < position.length; i++) {
-        drawCheckers(position[i]);
-    }
+function drawClientBoard(board) {
+    drawCheckers(board);
     connection.invoke("PlayGame", board).catch(function (err) {
         return console.error(err.toString());
     });
@@ -85,10 +82,7 @@ function drawCheckers(str) {
 }
 
 function play() {
-    // var n = Math.floor(Math.random() * possiblePositions.length);
-    // var board = possiblePositions[n][possiblePositions[n].length - 1];
     isUserTurn = true;
-    //setTimeout(drawClientBoard, 1500, possiblePositions[n], board);
 }
 
 function endOfTheGame(message) {
@@ -139,7 +133,7 @@ function cellMoveOnClick(e) {
             }
             isMoveCheckerChosen = true;
         } else if (tempPossiblePositions[0].length - index === 1) {
-            drawClientBoard(tempPossiblePositions[0], tempPossiblePositions[0][index]);
+            drawClientBoard(tempPossiblePositions[0][index]);
             brushCheckers();
         } else {
             isMoveCheckerChosen = true;
