@@ -97,11 +97,17 @@ function endOfTheGame(message) {
 
 var newPossiblePositions;
 var isMoveCheckerChosen = false;
+var index;
+var isInTurn;
 
 function cellOnClick(e) {
     var cell = e.target;
     if (isUserTurn) {
+        brushCheckers();
+        index = 0;
+        isInTurn = false;
         cell.style.color = 'orange';
+        cell.style.backgroundColor = 'yellow';
         newPossiblePositions = [];
         var id = parseInt(cell.id[0]) * 8 + parseInt(cell.id[1]);
         for (var i = 0; i < possiblePositions.length; i++) {
@@ -123,18 +129,43 @@ function cellMoveOnClick(e) {
         isUserTurn = false;
         tempPossiblePositions = [];
         for (var i = 0; i < newPossiblePositions.length; i++) {
-            if (newPossiblePositions[i][0][id] === 'w' || newPossiblePositions[i][0][id] === 'W') {
+            if (newPossiblePositions[i][index][id] === 'w' || newPossiblePositions[i][index][id] === 'W') {
                 tempPossiblePositions.push(newPossiblePositions[i]);
             }
         }
         if (tempPossiblePositions.length === 0) {
-            alert("Move is impossible");
-        } //else if (tempPossiblePositions[0].length === 1) {
-        //     drawCheckers(tempPossiblePositions[0][0]);
-        // } else {
-        //     dr
-        // }
-        var board = tempPossiblePositions[0][tempPossiblePositions[0].length - 1];
-        drawClientBoard(tempPossiblePositions[0], board)
+            if (!isInTurn) {
+                isUserTurn = true;
+            }
+            isMoveCheckerChosen = true;
+        } else if (tempPossiblePositions[0].length - index === 1) {
+            drawClientBoard(tempPossiblePositions[0], tempPossiblePositions[0][index]);
+            brushCheckers();
+        } else {
+            isMoveCheckerChosen = true;
+            isInTurn = true;
+            newPossiblePositions = tempPossiblePositions;
+            drawCheckers(tempPossiblePositions[0][index]);
+            index++;
+            brushCheckers();
+            cell.style.color = 'orange';
+            cell.style.backgroundColor = 'yellow';
+        }
+    }
+}
+
+function brushCheckers() {
+    for (var i = 0; i < 64; i++) {
+        var id = Math.floor(i / 8).toString() + (i % 8).toString();
+        var e = document.getElementById(id);
+        if (e.innerText === 'w' || e.innerText === 'W') {
+            e.onclick = cellOnClick;
+            e.style.color = 'yellow';
+        } else if (e.innerText === 'b' || e.innerText === 'B') {
+            e.style.color = 'black';
+        }
+        if (e.style.backgroundColor === 'yellow') {
+            e.style.backgroundColor = 'chocolate';
+        }
     }
 }
