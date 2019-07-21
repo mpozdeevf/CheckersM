@@ -36,12 +36,12 @@ startButton.addEventListener("click", function (event) {
 });
 
 function drawBoard() {
-    var counter = 0;
+    var counter = 1;
     for (var i = 0; i < currentPosition.length; i++) {
-        setTimeout(drawCheckers, counter * 600, currentPosition[i]);
+        setTimeout(drawCheckers, counter * 500, currentPosition[i]);
         counter++;
     }
-    setTimeout(play, counter * 600);
+    setTimeout(play, counter * 500);
 }
 
 function drawClientBoard(board) {

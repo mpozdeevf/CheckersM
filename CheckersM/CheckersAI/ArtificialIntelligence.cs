@@ -9,7 +9,7 @@ namespace CheckersAI
     {
         private const int Depth = 2;
 
-        private static readonly int[] WhitePoints =
+        private static readonly int[] WhiteWeights =
         {
             1, 1, 1, 1, 1, 1, 1, 1,
             2, 2, 2, 2, 2, 2, 2, 2,
@@ -21,7 +21,7 @@ namespace CheckersAI
             8, 8, 8, 8, 8, 8, 8, 8
         };
 
-        private static readonly int[] BlackPoints =
+        private static readonly int[] BlackWeights =
         {
             8, 8, 8, 8, 8, 8, 8, 8,
             7, 7, 7, 7, 7, 7, 7, 7,
@@ -33,7 +33,7 @@ namespace CheckersAI
             1, 1, 1, 1, 1, 1, 1, 1
         };
 
-        private static readonly int[] KingPoints =
+        private static readonly int[] KingWeights =
         {
             21, 21, 21, 21, 21, 21, 21, 21,
             21, 22, 22, 22, 22, 22, 22, 21,
@@ -55,10 +55,10 @@ namespace CheckersAI
                 var max = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
-                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i];
-                    if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
-                    if (position[position.Count - 1][i] == 'W') max -= KingPoints[i];
+                    if (position[position.Count - 1][i] == 'b') max += BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') max += KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') max -= WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') max -= KingWeights[i];
                 }
 
                 max -= WhiteMax(position[position.Count - 1], 0);
@@ -89,10 +89,10 @@ namespace CheckersAI
                 var max = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackPoints[i];
-                    if (position[position.Count - 1][i] == 'B') max += KingPoints[i];
-                    if (position[position.Count - 1][i] == 'w') max -= WhitePoints[i];
-                    if (position[position.Count - 1][i] == 'W') max -= KingPoints[i];
+                    if (position[position.Count - 1][i] == 'b') max += BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') max += KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') max -= WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') max -= KingWeights[i];
                 }
 
                 max -= WhiteMax(position[position.Count - 1], currentDepth);
@@ -113,10 +113,10 @@ namespace CheckersAI
                 var max = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max -= BlackPoints[i];
-                    if (position[position.Count - 1][i] == 'B') max -= KingPoints[i];
-                    if (position[position.Count - 1][i] == 'w') max += WhitePoints[i];
-                    if (position[position.Count - 1][i] == 'W') max += KingPoints[i];
+                    if (position[position.Count - 1][i] == 'b') max -= BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') max -= KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') max += WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') max += KingWeights[i];
                 }
 
                 if (currentDepth < Depth)
