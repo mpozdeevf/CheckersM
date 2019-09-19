@@ -19,7 +19,7 @@ namespace CheckersM.Services
             _games = database.GetCollection<Models.Game>(settings.GameCollectionName);
         }
 
-        public List<Models.Game> Get() =>
+        public List<Game> Get() =>
             _games.Find(game => true).ToList();
 
         public Models.Game Get(string id) =>
