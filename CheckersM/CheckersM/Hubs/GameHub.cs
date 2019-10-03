@@ -25,7 +25,7 @@ namespace CheckersM.Hubs
 
             var engine = WhiteTurn(null);
             var positions = engine.GetPossiblePositions();
-            var position = new List<string> {engine.GetCurrentPosition()};
+            var position = new List<string> { engine.GetCurrentPosition() };
 
             var game = new Models.Game
             {
@@ -49,8 +49,8 @@ namespace CheckersM.Hubs
                 return;
             }
 
-            var position = ArtificialIntelligence
-                .GetNextMove(positions);
+            var ai = new ArtificialIntelligence();
+            var position = ai.GetNextMove(positions);
             var newGame = _gameService.Get(Context.ConnectionId);
             newGame.Position = position;
             var newPositions = WhiteTurn(position[position.Count - 1]).GetPossiblePositions();

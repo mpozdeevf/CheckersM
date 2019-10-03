@@ -5,11 +5,11 @@ using CheckersEngine;
 
 namespace CheckersAI
 {
-    public static class ArtificialIntelligence
+    public class ArtificialIntelligence
     {
-        private const int Depth = 2;
+        private const int Depth = 3;
 
-        private static readonly int[] WhiteWeights =
+        private readonly int[] WhiteWeights =
         {
             1, 1, 1, 1, 1, 1, 1, 1,
             2, 2, 2, 2, 2, 2, 3, 3,
@@ -21,7 +21,7 @@ namespace CheckersAI
             14, 14, 14, 14, 14, 14, 14, 14
         };
 
-        private static readonly int[] BlackWeights =
+        private readonly int[] BlackWeights =
         {
             14, 14, 14, 14, 14, 14, 14, 14,
             12, 12, 10, 10, 10, 10, 13, 13,
@@ -33,7 +33,7 @@ namespace CheckersAI
             1, 1, 1, 1, 1, 1, 1, 1
         };
 
-        private static readonly int[] KingWeights =
+        private readonly int[] KingWeights =
         {
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
@@ -45,30 +45,32 @@ namespace CheckersAI
             15, 15, 15, 15, 15, 15, 15, 15,
         };
 
-        public static List<string> GetNextMove(List<List<string>> positions)
+        private bool isNodeForRemove = false;
+
+        public List<string> GetNextMove(List<List<string>> positions)
         {
             if (positions == null || positions.Count == 0) return null;
             var greatPos = new List<List<string>>();
             var maxPos = int.MinValue;
             foreach (var position in positions)
             {
-                var max = 0;
+                var posWeight = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackWeights[i];
-                    if (position[position.Count - 1][i] == 'B') max += KingWeights[i];
-                    if (position[position.Count - 1][i] == 'w') max -= WhiteWeights[i];
-                    if (position[position.Count - 1][i] == 'W') max -= KingWeights[i];
+                    if (position[position.Count - 1][i] == 'b') posWeight += BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') posWeight += KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') posWeight -= WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') posWeight -= KingWeights[i];
                 }
 
-                max -= WhiteMax(position[position.Count - 1], 0);
-                if (max > maxPos)
+                posWeight -= WhiteMax(position[position.Count - 1], 0, maxPos);
+                if (posWeight > maxPos)
                 {
-                    greatPos = new List<List<string>> {position};
-                    maxPos = max;
+                    greatPos = new List<List<string>> { position };
+                    maxPos = posWeight;
                 }
 
-                if (max == maxPos)
+                if (posWeight == maxPos)
                 {
                     greatPos.Add(position);
                 }
@@ -78,7 +80,7 @@ namespace CheckersAI
             return greatPos[rnd.Next(0, greatPos.Count - 1)];
         }
 
-        private static int BlackMax(string board, int currentDepth)
+        private int BlackMax(string board, int currentDepth, int beta)
         {
             var engine = new BlackCheckersEngine(board);
             var positions = engine.GetPossiblePositions();
@@ -86,23 +88,24 @@ namespace CheckersAI
             var maxPos = int.MinValue;
             foreach (var position in positions)
             {
-                var max = 0;
+                var posWeight = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max += BlackWeights[i];
-                    if (position[position.Count - 1][i] == 'B') max += KingWeights[i];
-                    if (position[position.Count - 1][i] == 'w') max -= WhiteWeights[i];
-                    if (position[position.Count - 1][i] == 'W') max -= KingWeights[i];
+                    if (position[position.Count - 1][i] == 'b') posWeight += BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') posWeight += KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') posWeight -= WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') posWeight -= KingWeights[i];
                 }
 
-                max -= WhiteMax(position[position.Count - 1], currentDepth);
-                if (max > maxPos) maxPos = max;
+                posWeight -= WhiteMax(position[position.Count - 1], currentDepth, maxPos);
+                if (posWeight > maxPos) maxPos = posWeight;
+                if (maxPos < beta) return maxPos;
             }
 
             return maxPos;
         }
 
-        private static int WhiteMax(string board, int currentDepth)
+        private int WhiteMax(string board, int currentDepth, int alpha)
         {
             var engine = new WhiteCheckersEngine(board);
             var positions = engine.GetPossiblePositions();
@@ -110,21 +113,22 @@ namespace CheckersAI
             var maxPos = int.MinValue;
             foreach (var position in positions)
             {
-                var max = 0;
+                var posWeight = 0;
                 for (var i = 0; i < position[position.Count - 1].Length; i++)
                 {
-                    if (position[position.Count - 1][i] == 'b') max -= BlackWeights[i];
-                    if (position[position.Count - 1][i] == 'B') max -= KingWeights[i];
-                    if (position[position.Count - 1][i] == 'w') max += WhiteWeights[i];
-                    if (position[position.Count - 1][i] == 'W') max += KingWeights[i];
+                    if (position[position.Count - 1][i] == 'b') posWeight -= BlackWeights[i];
+                    if (position[position.Count - 1][i] == 'B') posWeight -= KingWeights[i];
+                    if (position[position.Count - 1][i] == 'w') posWeight += WhiteWeights[i];
+                    if (position[position.Count - 1][i] == 'W') posWeight += KingWeights[i];
                 }
 
                 if (currentDepth < Depth)
                 {
-                    max -= BlackMax(position[position.Count - 1], currentDepth + 1);
+                    posWeight -= BlackMax(position[position.Count - 1], currentDepth + 1, maxPos);
                 }
 
-                if (max > maxPos) maxPos = max;
+                if (posWeight > maxPos) maxPos = posWeight;
+                if (maxPos >= alpha) return maxPos;
             }
 
             return maxPos;
