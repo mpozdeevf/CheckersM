@@ -14,11 +14,16 @@ namespace CheckersM
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
+                .Build();
+            CreateWebHostBuilder(args, config).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args, IConfiguration config) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseConfiguration(config)
                 .UseStartup<Startup>();
     }
 }
