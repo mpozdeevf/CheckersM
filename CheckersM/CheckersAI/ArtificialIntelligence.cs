@@ -7,7 +7,7 @@ namespace CheckersAI
 {
     public class ArtificialIntelligence
     {
-        private const int Depth = 3;
+        private const int Depth = 2;
 
         private readonly int[] WhiteWeights =
         {
