@@ -23,7 +23,9 @@ namespace CheckersM
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args, IConfiguration config) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
                 .UseConfiguration(config)
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>();
     }
 }
